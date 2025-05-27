@@ -25,20 +25,10 @@ def preprocess_abundance(abu, level):
 X_train = preprocess_abundance(X_train, 5)  # 属水平
 X_test = preprocess_abundance(X_test, 5)
 
-# Step 4: 特征对齐 + CLR 转换
+# Step 4: 特征对齐
 X_test = X_test.reindex(columns=X_train.columns, fill_value=0)
 X_train = X_train.div(X_train.sum(axis=1), axis=0)
 X_test = X_test.div(X_test.sum(axis=1), axis=0)
-
-def clr_transform(df):
-    pseudocount = 1e-6
-    log_df = np.log(df + pseudocount)
-    gm = log_df.mean(axis=1)
-    clr = log_df.sub(gm, axis=0)
-    return clr
-
-X_train = clr_transform(X_train)
-X_test = clr_transform(X_test)
 
 # Step 5: 标签处理
 y_train = y_train['Env'].str.split(':', expand=True).iloc[:, -1]
